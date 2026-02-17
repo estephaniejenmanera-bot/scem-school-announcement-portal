@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCEM - School Announcement Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Login Page -->
+        <div id="loginPage" class="login-container">
+            <div class="login-box">
+                <div class="logo-container flex flex-col items-center gap-2">
+                    <div class="logo-icon">
+                        <i data-lucide="school"></i>
+                    </div>
+                    <h1 class="logo-title">SCEM</h1>
+                    <p class="logo-subtitle">School Announcement Portal</p>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="mail" class="input-icon"></i>
+                            <input type="email" id="email" class="form-input" placeholder="username@gfis.edu.ph" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="lock" class="input-icon"></i>
+                            <input type="password" id="password" class="form-input password-input" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <i data-lucide="eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="errorMessage" class="error-message hidden"></div>
+                    <button type="submit" class="btn-primary">Sign In</button>
+                </form>
+                <div class="login-help">
+                    <p>Use admin@gfis.edu.ph for admin access</p>
+                    <p>Any other @gfis.edu.ph email for student access</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminDashboard" class="admin-container hidden">
+            <header class="header">
+                <div class="header-content flex items-center justify-between">
+                    <div class="header-left flex items-center gap-3">
+                        <div class="header-icon">
+                            <i data-lucide="school"></i>
+                        </div>
+                        <div>
+                            <h1 class="header-title">SCEM Admin Portal</h1>
+                            <p class="header-subtitle">School Announcement Management</p>
+                        </div>
+                    </div>
+                    <div class="header-right flex items-center gap-4">
+                        <div class="user-info">
+                            <p class="user-email" id="adminUserEmail"></p>
+                            <span class="user-role badge badge-general">Administrator</span>
+                        </div>
+                        <button class="btn-logout" onclick="logout()">
+                            <i data-lucide="log-out"></i>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <main class="main-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i data-lucide="bell"></i>
+                        </div>
+                        <div>
+                            <p class="stat-label">Total Announcements</p>
+                            <p class="stat-value" id="totalAnnouncements">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i data-lucide="calendar"></i>
+                        </div>
+                        <div>
+                            <p class="stat-label">Events</p>
+                            <p class="stat-value" id="eventsCount">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">
+                            <i data-lucide="bell-ring"></i>
+                        </div>
+                        <div>
+                            <p class="stat-label">Urgent</p>
+                            <p class="stat-value" id="urgentCount">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i data-lucide="users"></i>
+                        </div>
+                        <div>
+                            <p class="stat-label">Academic</p>
+                            <p class="stat-value" id="academicCount">0</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-create" onclick="toggleForm()">
+                    <i data-lucide="plus"></i>
+                    Create New Announcement
+                </button>
+                <div id="announcementForm" class="form-container hidden">
+                    <h2 class="form-title">Create Announcement</h2>
+                    <div class="form-group">
+                        <label class="form-label" for="formTitle">Title</label>
+                        <input type="text" id="formTitle" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="formContent">Content</label>
+                        <textarea id="formContent" class="form-input" rows="4" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="formCategory">Category</label>
+                            <select id="formCategory" class="form-input">
+                                <option value="General">General</option>
+                                <option value="Event">Event</option>
+                                <option value="Academic">Academic</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="formAudience">Target Audience</label>
+                            <select id="formAudience" class="form-input">
+                                <option value="All">All</option>
+                                <option value="Students Only">Students Only</option>
+                                <option value="Faculty Only">Faculty Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="formDate">Event/Expiration Date (optional)</label>
+                        <input type="date" id="formDate" class="form-input">
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn-submit" onclick="submitAnnouncement()">Create</button>
+                        <button class="btn-cancel" onclick="cancelForm()">Cancel</button>
+                    </div>
+                </div>
+                <h2 class="form-title">All Announcements</h2>
+                <div id="adminAnnouncementsList"></div>
+            </main>
+        </div>
+
+        <!-- Student Dashboard -->
+        <div id="studentDashboard" class="student-container hidden">
+            <header class="student-header">
+                <div class="header-content flex items-center justify-between">
+                    <div class="header-left flex items-center gap-3">
+                        <div class="header-icon">
+                            <i data-lucide="school"></i>
+                        </div>
+                        <div>
+                            <h1 class="header-title">SCEM Portal</h1>
+                            <p class="header-subtitle">Announcements</p>
+                        </div>
+                    </div>
+                    <div class="header-right flex items-center gap-4">
+                        <div class="user-info">
+                            <p class="user-email" id="studentUserEmail"></p>
+                            <span class="user-role badge badge-general">Student</span>
+                        </div>
+                        <button class="btn-logout" onclick="logout()">
+                            <i data-lucide="log-out"></i>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <main class="main-content">
+                <div class="banner">
+                    <div>
+                        <h1 class="banner-title" id="welcomeMessage">Welcome Back!</h1>
+                        <p class="banner-subtitle">Stay updated with the latest school announcements</p>
+                    </div>
+                    <div class="banner-stat">
+                        <p class="banner-stat-value" id="studentTotalAnnouncements">0</p>
+                        <p class="banner-stat-label">Active Announcements</p>
+                    </div>
+                </div>
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <div class="search-input-wrapper">
+                            <i data-lucide="search" class="search-icon"></i>
+                            <input type="text" id="searchInput" class="search-input" placeholder="Search announcements..." oninput="handleSearch()">
+                        </div>
+                        <div class="filter-wrapper">
+                            <i data-lucide="filter" class="filter-icon"></i>
+                            <select id="filterSelect" class="filter-select" onchange="handleFilter()">
+                                <option value="All Categories">All Categories</option>
+                                <option value="General">General</option>
+                                <option value="Event">Events</option>
+                                <option value="Academic">Academic</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Added sort option for more dynamic -->
+                    <div class="filter-wrapper" style="margin-top: 1rem;">
+                        <i data-lucide="sort-desc" class="filter-icon"></i>
+                        <select id="sortSelect" class="filter-select" onchange="handleSort()">
+                            <option value="newest">Sort by: Newest First</option>
+                            <option value="oldest">Sort by: Oldest First</option>
+                            <option value="title">Sort by: Title A-Z</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="quick-stats">
+                    <div class="quick-stat-card">
+                        <p class="quick-stat-value" id="studentTotal">0</p>
+                        <p class="quick-stat-label">Total</p>
+                    </div>
+                    <div class="quick-stat-card">
+                        <p class="quick-stat-value" id="studentUrgent">0</p>
+                        <p class="quick-stat-label">Urgent</p>
+                    </div>
+                    <div class="quick-stat-card">
+                        <p class="quick-stat-value" id="studentEvents">0</p>
+                        <p class="quick-stat-label">Events</p>
+                    </div>
+                    <div class="quick-stat-card">
+                        <p class="quick-stat-value" id="studentAcademic">0</p>
+                        <p class="quick-stat-label">Academic</p>
+                    </div>
+                </div>
+                <div id="announcementsList"></div>
+            </main>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
